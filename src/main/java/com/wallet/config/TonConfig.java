@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.ton.ton4j.tonlib.Tonlib;
-import org.ton.ton4j.utils.Utils;
 
 import java.io.File;
 
@@ -42,7 +41,7 @@ public class TonConfig {
 
 //            String path = detectNativeLibraryPath();
 //            log.info("Using native library at: {}", libPath);
-            String path = "/Users/cindy/IdeaProjects/multi-chain-wallet/tonlibjson-mac-x86-64.dylib";
+            String path = "/app/tonlibjson-linux-arm64.so";
             log.info("path " + path);
 
             Tonlib tonlib = Tonlib.builder()
