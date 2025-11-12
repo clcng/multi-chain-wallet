@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: wallet-postgres
+    environment:
+      POSTGRES_DB: wallet_db
+      POSTGRES_USER: wallet_admin
+      POSTGRES_PASSWORD: wallet_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - wallet-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wallet_admin -d wallet_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wallet-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wallet-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/wallet_db
+      SPRING_DATASOURCE_USERNAME: wallet_admin
+      SPRING_DATASOURCE_PASSWORD: wallet_password
+      JWT_SECRET: your-256-bit-secret-key-change-this-in-production
+      ETHEREUM_RPC_URL: https://sepolia.infura.io/v3/YOUR_INFURA_KEY
+      TRON_RPC_URL: https://api.shasta.trongrid.io
+      TON_RPC_URL: https://testnet.toncenter.com/api/v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - wallet-network
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: wallet-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@wallet.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - wallet-network
+    depends_on:
+      - postgres
+
+networks:
+  wallet-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

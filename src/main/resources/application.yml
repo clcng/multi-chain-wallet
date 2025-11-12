@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: multi-chain-wallet
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wallet_db
+    username: wallet_admin
+    password: wallet_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+    open-in-view: false
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    com.wallet: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:your-256-bit-secret-key-change-this-in-production}
+    expiration: 86400000 # 24 hours
+
+  blockchain:
+    ethereum:
+      rpc-url: ${ETHEREUM_RPC_URL:https://sepolia.infura.io/v3/YOUR_KEY}
+      chain-id: 11155111
+      gas-price: 20000000000
+      gas-limit: 21000
+
+    tron:
+      rpc-url: ${TRON_RPC_URL:https://api.shasta.trongrid.io}
+      api-key: ${TRON_API_KEY:}
+      network: SHASTA
+
+    ton:
+      rpc-url: ${TON_RPC_URL:https://testnet.toncenter.com/api/v2}
+      api-key: ${TON_API_KEY:}
+      network: testnet
+
+ton:
+  network: testnet
+  api-endpoint: https://testnet.toncenter.com/api/v2/
+  api-key: ${TON_API_KEY:your-api-key-here}
+  scanner:
+    enabled: true
+    interval: 10000  # 10 seconds
+    confirmation-blocks: 3
+  wallet:
+    workchain: 0
+    version: V3R2
+  isTestnet: true
