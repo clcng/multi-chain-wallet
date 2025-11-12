@@ -2,7 +2,6 @@ package com.wallet.controller;
 
 import com.wallet.dto.WalletCreationDto;
 import com.wallet.dto.WalletResponseDto;
-import com.wallet.model.Wallet;
 import com.wallet.model.enums.BlockchainNetwork;
 import com.wallet.service.WalletService;
 import jakarta.validation.Valid;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/wallets")
@@ -70,15 +68,4 @@ public class WalletController {
         }
     }
 
-    /*
-    @PutMapping("/{walletId}/balance")
-    public ResponseEntity<?> updateBalance(@PathVariable UUID walletId) {
-        try {
-            WalletResponseDto wallet = walletService.updateWalletBalance(walletId);
-            return ResponseEntity.ok(wallet);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-    */
 }
